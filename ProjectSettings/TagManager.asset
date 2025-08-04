@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - DropArea
+  - Fruit
   layers:
   - Default
   - TransparentFX
@@ -45,18 +46,18 @@ TagManager:
   - name: Background
     uniqueID: 1358006859
     locked: 0
-  - name: buyer
-    uniqueID: 740162257
-    locked: 0
   - name: Stall
     uniqueID: 3967156331
     locked: 0
   - name: Table
     uniqueID: 2862192083
     locked: 0
-  - name: FruitShadow
-    uniqueID: 1333594711
-    locked: 0
   - name: fruits
     uniqueID: 3005079295
+    locked: 0
+  - name: buyer
+    uniqueID: 740162257
+    locked: 0
+  - name: FruitShadow
+    uniqueID: 1333594711
     locked: 0
