@@ -43,5 +43,15 @@ public class FruitDatabaseSO : ScriptableObject
         Debug.LogWarning($"Fruit not found: {fruitName}");
         return null;
     }
+
+    public IReadOnlyList<FruitData> All => fruitList;
+
+    public string GetRandomName()
+    {
+        if (fruitList == null || fruitList.Count == 0) return null;
+        return fruitList[Random.Range(0, fruitList.Count)].fruitName;
+    }
+
+    
 }
 

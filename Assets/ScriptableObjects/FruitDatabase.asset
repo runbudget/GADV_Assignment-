@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99ef2cbd0ec38fc4193236bfda29572d, type: 3}
   m_Name: FruitDatabase
   m_EditorClassIdentifier: 
-  fruitList: []
+  fruitList:
+  - fruitName: Banana
+    fruit: {fileID: -5728686177044832811, guid: b1f24b3bc2e2f1d4b858657ad5c115a0, type: 3}
+  - fruitName: Apple
+    fruit: {fileID: 7293598183456022363, guid: 1ddc9afd21fec77489b1248d18f31b68, type: 3}

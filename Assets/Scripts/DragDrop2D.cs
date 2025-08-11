@@ -8,7 +8,7 @@ public class DragDrop2D : MonoBehaviour
     
         
     Vector3 offset;
-    Collider2D collider2D;
+    new Collider2D collider2D;
     public string destinationTag = "DropArea";
 
     void Awake()
