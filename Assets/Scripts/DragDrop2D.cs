@@ -31,32 +31,12 @@ public class DragDrop2D : MonoBehaviour
         collider2D.enabled = false;
         var rayOrigin = Camera.main.transform.position;
         var rayDirection = MouseWorldPosition();
-        rayDirection = (MouseWorldPosition() - rayOrigin).normalized; // for direction correctness
         RaycastHit2D hitInfo;
         if (hitInfo = Physics2D.Raycast(rayOrigin, rayDirection))
         {
             if (hitInfo.transform.tag == destinationTag)
             {
                 transform.position = hitInfo.transform.position + new Vector3(0, 0, -0.01f);
-
-                var df = GetComponent<DraggableFruit>();
-                if (df != null)
-                {
-                    var judge = hitInfo.transform.GetComponent<FruitDropJudge>();
-                    if (judge != null)
-                    {
-                        judge.CheckDroppedFruit(df.fruitName);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("DropArea has no fruitdropjudge component.");
-
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("This draggable is missing DraggableFruit (fruitname)");
-                }
             }
         }
         collider2D.enabled = true;
