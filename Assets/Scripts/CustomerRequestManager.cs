@@ -4,24 +4,31 @@ using TMPro;
 
 public class CustomerRequestManager : MonoBehaviour
 {
-    [SerializeField] private FruitDatabaseSO database;
     [SerializeField] private TextMeshProUGUI requestLabel;
 
-
-    public string CurrentRequest { get; private set; }
-
-    void Start()
+    void Awake()
     {
-        database.Initialize();
-        NewRequest();
+        // Auto-find a label if not assigned
+        if (requestLabel == null)
+        {
+            requestLabel = GetComponentInChildren<TextMeshProUGUI>(true);
+            if (requestLabel == null)
+            {
+                Debug.LogError("[CustomerRequestManager] No TextMeshProUGUI assigned or found. " +
+                               "Assign one in the Inspector.", this);
+            }
+        }
     }
 
-
-    public void NewRequest()
+    public void SetRequest(string fruitName)
     {
-        CurrentRequest = database.GetRandomName();
-        requestLabel.text = string.IsNullOrEmpty(CurrentRequest)
-            ? "No fruits avalable"
-            : $"Hi! {CurrentRequest}, please!";
+        if (requestLabel == null)
+        {
+            Debug.LogError("[CustomerRequestManager] requestLabel is null; cannot update text.", this);
+            return;
+        }
+        requestLabel.text = string.IsNullOrEmpty(fruitName)
+            ? "No request!"
+            : $"Hi! {fruitName}, please!";
     }
 }

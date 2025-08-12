@@ -10,6 +10,7 @@ public class DragDrop2D : MonoBehaviour
     Vector3 offset;
     new Collider2D collider2D;
     public string destinationTag = "DropArea";
+    public RoundManager roundManager; //assign in inspector
 
     void Awake()
     {
@@ -43,21 +44,9 @@ public class DragDrop2D : MonoBehaviour
                 // Check correctness of the selection
 
                 var df = GetComponent<DraggableFruit>();
-                if (df != null)
+                if (df != null && roundManager != null)
                 {
-                    var judge = hitInfo.transform.GetComponent<FruitDropCheck>();
-                    if (judge != null)
-                    {
-                        judge.CheckDroppedFruit(df.fruitName);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Drop area has no fruitdropjudge component.");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("This draggable obj is missing DraggableFruit (fruitName)");
+                    roundManager.CheckDrop(df.fruitName, df);
                 }
 
             }
