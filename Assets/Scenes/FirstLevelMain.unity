@@ -413,6 +413,7 @@ GameObject:
   - component: {fileID: 749759548}
   - component: {fileID: 749759547}
   - component: {fileID: 749759551}
+  - component: {fileID: 749759552}
   m_Layer: 0
   m_Name: Apple
   m_TagString: Fruit
@@ -556,6 +557,65 @@ CircleCollider2D:
   m_Offset: {x: -0.0027975463, y: 0.016385956}
   serializedVersion: 2
   m_Radius: 0.0704776
+--- !u!114 &749759552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 749759546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bac8dd2694a934045a9775120e39353c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fruitName: Apple
+--- !u!1 &799168894
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 799168896}
+  - component: {fileID: 799168895}
+  m_Layer: 0
+  m_Name: CustomerRequestManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &799168895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 799168894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddd1ed2fe5fd05c4686c65ade1144d3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  database: {fileID: 11400000, guid: 50eab6206c0caaa4398fff0e14dee03c, type: 2}
+  requestLabel: {fileID: 1203623888}
+--- !u!4 &799168896
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 799168894}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.892921, y: 0.013517233, z: -0.054111388}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &813921701
 GameObject:
   m_ObjectHideFlags: 0
@@ -805,7 +865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bac8dd2694a934045a9775120e39353c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fruitName: 
+  fruitName: Banana
 --- !u!1 &1203623886
 GameObject:
   m_ObjectHideFlags: 0
@@ -819,7 +879,7 @@ GameObject:
   - component: {fileID: 1203623888}
   - component: {fileID: 1203623890}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: CustomerRequest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -900,7 +960,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -929,7 +989,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -3.460638, w: 7.637268}
+  m_margin: {x: -6.058315, y: 0, z: -9.43191, w: 7.637268}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1237,6 +1297,7 @@ GameObject:
   - component: {fileID: 1918702715}
   - component: {fileID: 1918702716}
   - component: {fileID: 1918702717}
+  - component: {fileID: 1918702718}
   m_Layer: 5
   m_Name: DropArea
   m_TagString: DropArea
@@ -1360,6 +1421,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3.5498452, y: 4.1741495}
   m_EdgeRadius: 0
+--- !u!114 &1918702718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918702714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25dc67bc0f4b0c548ae5a23143584d0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  requestManager: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1373,3 +1447,4 @@ SceneRoots:
   - {fileID: 1513972220}
   - {fileID: 631595972}
   - {fileID: 1810563460}
+  - {fileID: 799168896}

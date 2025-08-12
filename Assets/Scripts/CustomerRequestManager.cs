@@ -22,6 +22,6 @@ public class CustomerRequestManager : MonoBehaviour
         CurrentRequest = database.GetRandomName();
         requestLabel.text = string.IsNullOrEmpty(CurrentRequest)
             ? "No fruits avalable"
-            : $"Customer wants: {CurrentRequest}";
+            : $"Hi! {CurrentRequest}, please!";
     }
 }
