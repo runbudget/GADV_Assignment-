@@ -4,54 +4,49 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "FruitDatabase", menuName = "ScriptableObjects/FruitDatabaseSO")]
 public class FruitDatabaseSO : ScriptableObject
 {
-    [Header("Serialized List of Fruits")]
-    [SerializeField]
-    private List<FruitData> fruitList = new List<FruitData>();
+    [SerializeField] private List<FruitData> fruitList = new List<FruitData>();
 
-    private Dictionary<string, Sprite> fruitDictionary;
-
-    public void Initialize()
-    {
-        fruitDictionary = new Dictionary<string, Sprite>();
-
-        foreach (FruitData fruitData in fruitList)
-        {
-            if (!fruitDictionary.ContainsKey(fruitData.fruitName))
-            {
-                fruitDictionary.Add(fruitData.fruitName, fruitData.fruit);
-            }
-            else
-            {
-                Debug.LogWarning($"Duplicate fruit name found: {fruitData.fruitName}. Skipping.");
-            }
-        }
-    }
-
-    public Sprite GetFruitSprite(string fruitName)
-    {
-        if (fruitDictionary == null)
-        {
-            Debug.LogWarning("Fruit dictionary not initialized. Call Initialize() first.");
-            return null;
-        }
-
-        if (fruitDictionary.TryGetValue(fruitName, out Sprite sprite))
-        {
-            return sprite;
-        }
-
-        Debug.LogWarning($"Fruit not found: {fruitName}");
-        return null;
-    }
+    private Dictionary<string, FruitData> byEnglishName;
 
     public IReadOnlyList<FruitData> All => fruitList;
 
+    public void Initialize()
+    {
+        byEnglishName = new Dictionary<string, FruitData>();
+        foreach (var f in fruitList)
+        {
+            if (f == null || string.IsNullOrWhiteSpace(f.fruitNameEnglish)) continue;
+            if (!byEnglishName.ContainsKey(f.fruitNameEnglish))
+                byEnglishName.Add(f.fruitNameEnglish, f);
+            else
+                Debug.LogWarning($"Duplicate English fruit name: {f.fruitNameEnglish}");
+        }
+    }
+
+    // Your RoundManager asks for this:
     public string GetRandomName()
     {
         if (fruitList == null || fruitList.Count == 0) return null;
-        return fruitList[Random.Range(0, fruitList.Count)].fruitName;
+        return fruitList[Random.Range(0, fruitList.Count)].fruitNameEnglish;
     }
 
-    
-}
+    // Convenience (used by older code)
+    public Sprite GetFruitSprite(string englishName)
+    {
+        var fd = GetByEnglish(englishName);
+        return fd != null ? fd.sprite : null;
+    }
 
+    // Helpful for data-based spawning
+    public FruitData GetRandomData()
+    {
+        if (fruitList == null || fruitList.Count == 0) return null;
+        return fruitList[Random.Range(0, fruitList.Count)];
+    }
+
+    public FruitData GetByEnglish(string englishName)
+    {
+        if (string.IsNullOrWhiteSpace(englishName) || byEnglishName == null) return null;
+        return byEnglishName.TryGetValue(englishName, out var fd) ? fd : null;
+    }
+}
