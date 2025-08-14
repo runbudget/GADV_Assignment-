@@ -1,18 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 
 
-// stores name, sprite, and start position
 [RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(Collider2D))]
 public class DraggableFruit : MonoBehaviour
 {
-    [Tooltip("Match the name of the fruit in the database")]
-    public string fruitName;
+    // Legacy-friendly field used by DragDrop2D/CheckDrop
+    public string fruitName;                // will mirror Data.fruitNameEnglish
+
+    // Full data (bilingual, audio, etc.)
+    public FruitData Data { get; private set; }
+
     private SpriteRenderer sr;
     private Vector3 startPos;
-
 
     void Awake()
     {
@@ -21,19 +26,27 @@ public class DraggableFruit : MonoBehaviour
 
     void Start()
     {
-        //record spawn position for resetting on wrong drop
         startPos = transform.position;
     }
 
-    public void Init(string name, Sprite sprite)
+    // --- Overload #1: old style ---
+    public void Init(string englishName, Sprite sprite)
     {
-        fruitName = name;
-        sr.sprite = sprite;
+        fruitName = englishName;
+        if (sr != null) sr.sprite = sprite;
+        Data = null; // optional
     }
-    
+
+    // --- Overload #2: new data-based style ---
+    public void Init(FruitData data)
+    {
+        Data = data;
+        fruitName = data != null ? data.fruitNameEnglish : null;
+        if (sr != null && data != null) sr.sprite = data.sprite;
+    }
+
     public void ResetToStart()
     {
         transform.position = startPos;
     }
 }
-

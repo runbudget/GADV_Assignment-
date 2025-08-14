@@ -6,6 +6,7 @@ using UnityEngine;
 // picks the request, spawns fruits,
 // clears between rounds, and resets the pos of wrong selections
 
+
 public class RoundManager : MonoBehaviour
 {
     [Header("Data & UI")]
@@ -13,7 +14,7 @@ public class RoundManager : MonoBehaviour
     [SerializeField] private CustomerRequestManager requestUI;  // assign in Inspector
 
     [Header("Spawning")]
-    [SerializeField] private DraggableFruit draggableFruitPrefab; // assign prefab
+    [SerializeField] private DraggableFruit draggableFruitPrefab; // assign prefab (root has DraggableFruit)
     [SerializeField] private List<Transform> spawnPoints;         // assign in Inspector
     [SerializeField] private int fruitsPerRound = 4;
 
@@ -35,7 +36,7 @@ public class RoundManager : MonoBehaviour
         ClearFruits();
 
         // 1) pick the requested fruit (must exist)
-        currentRequest = database.GetRandomName();
+        currentRequest = database.GetRandomName(); // returns fruitNameEnglish
         if (string.IsNullOrEmpty(currentRequest))
         {
             Debug.LogError("[RoundManager] Database has no fruits. Cannot start round.", this);
@@ -45,8 +46,8 @@ public class RoundManager : MonoBehaviour
         requestUI.SetRequest(currentRequest);
 
         // 2) figure out how many fruits we can actually spawn
-        int maxBySpawnPoints = spawnPoints != null ? spawnPoints.Count : 0;
-        int totalUnique = Mathf.Max(1, database.All.Count); // unique fruit names available
+        int maxBySpawnPoints = (spawnPoints != null) ? spawnPoints.Count : 0;
+        int totalUnique = Mathf.Max(1, database.All.Count); // unique fruit entries available
         int maxByUnique = Mathf.Min(totalUnique, fruitsPerRound);
         int targetCount = Mathf.Min(fruitsPerRound, maxBySpawnPoints, maxByUnique);
 
@@ -56,11 +57,10 @@ public class RoundManager : MonoBehaviour
             return;
         }
 
-        // 3) build the names list: one correct + (targetCount-1) distinct others
+        // 3) build the names list: includes exactly one 'currentRequest' + (targetCount-1) distinct others
         var names = BuildNamesSafe(targetCount, currentRequest);
 
-        // 4) spawn them
-        // (names.Count == targetCount and contains exactly one correct already)
+        // 4) spawn them (parent to spawn point to avoid offsets/overlaps)
         Shuffle(spawnPoints);
 
         for (int i = 0; i < targetCount; i++)
@@ -73,15 +73,21 @@ public class RoundManager : MonoBehaviour
                 continue;
             }
 
-            var fruit = Instantiate(draggableFruitPrefab, spawnPoints[i].position, Quaternion.identity);
+            // Parent to spawn point so local position is zeroed (no stacking/offset)
+            var fruit = Instantiate(draggableFruitPrefab, spawnPoints[i], worldPositionStays: false);
+            fruit.transform.localPosition = Vector3.zero;
+            fruit.transform.localRotation = Quaternion.identity;
+            fruit.transform.localScale = Vector3.one;
+
+            // Use the legacy-friendly Init(string, Sprite) overload
             fruit.Init(nameToSpawn, sprite);
+
             activeFruits.Add(fruit);
         }
     }
 
     public void CheckDrop(string fruitName, DraggableFruit fruit)
     {
-        // guard just in case
         if (fruit == null) return;
 
         if (string.Equals(fruitName, currentRequest))
@@ -103,16 +109,16 @@ public class RoundManager : MonoBehaviour
         activeFruits.Clear();
     }
 
-    // Builds a list of 'count' names that includes exactly one 'mustInclude' and the rest unique others.
+    // Builds a list of 'count' English names that includes exactly one 'mustInclude' and the rest unique others.
     private List<string> BuildNamesSafe(int count, string mustInclude)
     {
-        // Gather all unique names
+        // Gather all unique English names from the database
         var all = database.All;
         var pool = new List<string>(all.Count);
         for (int i = 0; i < all.Count; i++)
         {
-            var n = all[i].fruitName;
-            if (!string.IsNullOrEmpty(n))
+            var n = all[i]?.fruitNameEnglish; // <<< UPDATED FIELD NAME
+            if (!string.IsNullOrEmpty(n) && !pool.Contains(n))
                 pool.Add(n);
         }
 
@@ -131,17 +137,17 @@ public class RoundManager : MonoBehaviour
         for (int i = 0; i < count - 1 && i < others.Count; i++)
             result.Add(others[i]);
 
-        // If we still don't have enough (very small DB), just repeat random entries from pool (excluding adding more corrects)
+        // If we still don't have enough (very small DB), fill with non-correct items
         int guard = 100;
         while (result.Count < count && guard-- > 0)
         {
-            var candidate = others.Count > 0 ? others[Random.Range(0, others.Count)] : mustInclude;
-            // allow duplicates if we must, but avoid adding second copy of mustInclude
-            if (candidate != mustInclude || !result.Contains(candidate))
-                result.Add(candidate);
+            if (others.Count == 0) break; // nothing else to add
+            var candidate = others[Random.Range(0, others.Count)];
+            // allow duplicates if necessary, but do not add multiple of mustInclude
+            result.Add(candidate);
         }
 
-        // Shuffle result so correct isn't always index 0
+        // Shuffle result so correct isn't always first
         Shuffle(result);
         return result;
     }

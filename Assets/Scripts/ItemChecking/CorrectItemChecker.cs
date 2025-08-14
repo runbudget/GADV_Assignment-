@@ -23,13 +23,13 @@ public class CorrectItemChecker : MonoBehaviour
 
         foreach (FruitData fruitData in fruitList)
         {
-            if (!fruitDictionary.ContainsKey(fruitData.fruitName))
+            if (!fruitDictionary.ContainsKey(fruitData.fruitNameEnglish))
             {
-                fruitDictionary.Add(fruitData.fruitName, fruitData.fruit);
+                fruitDictionary.Add(fruitData.fruitNameEnglish, fruitData.sprite);
             }
             else
             {
-                Debug.LogWarning($"Duplicate fruit name found: {fruitData.fruitName}. Skipping.");
+                Debug.LogWarning($"Duplicate fruit name found: {fruitData.fruitNameEnglish}. Skipping.");
             }
         }
     }
