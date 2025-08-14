@@ -66,27 +66,23 @@ public class RoundManager : MonoBehaviour
         for (int i = 0; i < targetCount; i++)
         {
             var nameToSpawn = names[i];
-            var sprite = database.GetFruitSprite(nameToSpawn);
-            if (sprite == null)
+            var data = database.GetByEnglish(nameToSpawn);
+            if (data == null || data.sprite == null)
             {
-                Debug.LogWarning($"[RoundManager] No sprite for '{nameToSpawn}'. Skipping.");
+                Debug.LogWarning($"[RoundManager] Missing data/sprite for '{nameToSpawn}'. Skipping.");
                 continue;
             }
 
-            // Parent to spawn point so local position is zeroed (no stacking/offset)
-            var fruit = Instantiate(draggableFruitPrefab, spawnPoints[i], worldPositionStays: false);
+            var fruit = Instantiate(draggableFruitPrefab, spawnPoints[i], false);
             fruit.transform.localPosition = Vector3.zero;
             fruit.transform.localRotation = Quaternion.identity;
             fruit.transform.localScale = Vector3.one;
 
 
-            //check again
             var drag = fruit.GetComponent<DragDrop2D>();
             if (drag != null) drag.SetRoundManager(this);
 
-            // Use the legacy-friendly Init(string, Sprite) overload
-            fruit.Init(nameToSpawn, sprite);
-
+            fruit.Init(data); // <-- now each fruit knows Eng/Khmer + audio
             activeFruits.Add(fruit);
         }
     }

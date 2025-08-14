@@ -30,6 +30,9 @@ public class DragDrop2D : MonoBehaviour
     void OnMouseUp()
     {
         collider2D.enabled = false;
+        var point = MouseWorldPosition();
+        var cols = Physics2D.OverlapPointAll(point);
+        bool droppedInTarget = false;
         var rayOrigin = Camera.main.transform.position;
         var rayDirection = MouseWorldPosition();
         rayDirection = (MouseWorldPosition() - rayOrigin).normalized;
@@ -49,6 +52,11 @@ public class DragDrop2D : MonoBehaviour
                     roundManager.CheckDrop(df.fruitName, df);
                 }
 
+            }
+            if (!droppedInTarget)
+            {
+                var df = GetComponent<DraggableFruit>();
+                if (df != null) df.ResetToStart();
             }
         }
         collider2D.enabled = true;
