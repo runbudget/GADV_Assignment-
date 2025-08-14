@@ -14,17 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fruitList:
   - fruitNameEnglish: Apple
-    fruitNameKhmer: placeholder(apple)
+    fruitNameKhmer: "\u1794\u17C9\u17C4\u1798"
     sprite: {fileID: 7293598183456022363, guid: 1ddc9afd21fec77489b1248d18f31b68, type: 3}
-    audioEnglish: {fileID: 0}
-    audioKhmer: {fileID: 0}
-  - fruitNameEnglish: 
-    fruitNameKhmer: 
-    sprite: {fileID: 0}
-    audioEnglish: {fileID: 0}
-    audioKhmer: {fileID: 0}
-  - fruitNameEnglish: 
-    fruitNameKhmer: 
-    sprite: {fileID: 0}
-    audioEnglish: {fileID: 0}
-    audioKhmer: {fileID: 0}
+    audioEnglish: {fileID: 8300000, guid: a2197716919c0e04eb10f9e11afde7ac, type: 3}
+    audioKhmer: {fileID: 8300000, guid: becc5fa72c759e84a9cb487b12c73375, type: 3}
+  - fruitNameEnglish: Banana
+    fruitNameKhmer: "\u1785\u17C1\u1780"
+    sprite: {fileID: -5728686177044832811, guid: b1f24b3bc2e2f1d4b858657ad5c115a0, type: 3}
+    audioEnglish: {fileID: 8300000, guid: a2197716919c0e04eb10f9e11afde7ac, type: 3}
+    audioKhmer: {fileID: 8300000, guid: becc5fa72c759e84a9cb487b12c73375, type: 3}
+  - fruitNameEnglish: Cherries
+    fruitNameKhmer: Plceholer
+    sprite: {fileID: -4570538037665054336, guid: 3d6be91968cb95546ac95aeff5e52f84, type: 3}
+    audioEnglish: {fileID: 8300000, guid: a2197716919c0e04eb10f9e11afde7ac, type: 3}
+    audioKhmer: {fileID: 8300000, guid: becc5fa72c759e84a9cb487b12c73375, type: 3}
