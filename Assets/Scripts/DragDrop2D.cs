@@ -62,6 +62,9 @@ public class DragDrop2D : MonoBehaviour
 
     }
 
+
+    public void SetRoundManager(RoundManager rm) => roundManager = rm;
+
 } 
     
 

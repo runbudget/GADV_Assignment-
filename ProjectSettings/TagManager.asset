@@ -10,6 +10,7 @@ TagManager:
   - Customer
   - CustomerRequest
   - FruitName
+  - Table
   layers:
   - Default
   - TransparentFX
@@ -50,17 +51,20 @@ TagManager:
   - name: Background
     uniqueID: 1358006859
     locked: 0
-  - name: Stall
-    uniqueID: 3967156331
-    locked: 0
-  - name: FruitSpawner
-    uniqueID: 3966002075
-    locked: 0
   - name: Customer
     uniqueID: 740162257
     locked: 0
+  - name: Stall
+    uniqueID: 3967156331
+    locked: 0
   - name: Table
     uniqueID: 2862192083
+    locked: 0
+  - name: FruitName
+    uniqueID: 3250466929
+    locked: 0
+  - name: FruitSpawner
+    uniqueID: 3966002075
     locked: 0
   - name: fruits
     uniqueID: 3005079295
@@ -70,7 +74,4 @@ TagManager:
     locked: 0
   - name: FruitShadow
     uniqueID: 1333594711
-    locked: 0
-  - name: FruitName
-    uniqueID: 3250466929
     locked: 0

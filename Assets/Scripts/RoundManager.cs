@@ -79,6 +79,11 @@ public class RoundManager : MonoBehaviour
             fruit.transform.localRotation = Quaternion.identity;
             fruit.transform.localScale = Vector3.one;
 
+
+            //check again
+            var drag = fruit.GetComponent<DragDrop2D>();
+            if (drag != null) drag.SetRoundManager(this);
+
             // Use the legacy-friendly Init(string, Sprite) overload
             fruit.Init(nameToSpawn, sprite);
 
