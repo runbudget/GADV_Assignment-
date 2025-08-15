@@ -16,21 +16,35 @@ public class RoundManager : MonoBehaviour
     [Header("Spawning")]
     [SerializeField] private DraggableFruit draggableFruitPrefab; // assign prefab (root has DraggableFruit)
     [SerializeField] private List<Transform> spawnPoints;         // assign in Inspector
-    [SerializeField] private int fruitsPerRound = 4;
+    [SerializeField] private int fruitsPerRound = 3;
+
+
+    [Header("Scoring / Win")]
+    [SerializeField] private StarHUD starHUD;                 // assign in Inspector
+    [SerializeField] private int starsToWin = 3;              // goal
+    [SerializeField] private GameObject levelCompletePanel;   // inactive at start
+
+
 
     private readonly List<DraggableFruit> activeFruits = new List<DraggableFruit>();
+    private readonly HashSet<string> uniqueCorrect = new HashSet<string>(); //track unique fruit names
     private string currentRequest;
+    private bool levelCleared = false;
 
     void Start()
     {
         if (!ValidateSetup()) return;
 
         database.Initialize();
+        UpdateStarsHUD(); // 0/3 at the beginning of the lvl
+        if (levelCompletePanel != null ) levelCompletePanel.SetActive(false);
+       
         StartNewRound();
     }
 
     public void StartNewRound()
     {
+        if (levelCleared) return;
         if (!ValidateSetup()) return;
 
         ClearFruits();
@@ -91,14 +105,40 @@ public class RoundManager : MonoBehaviour
     {
         if (fruit == null) return;
 
-        if (string.Equals(fruitName, currentRequest))
+        // Robust compare + trace
+        string f = fruitName?.Trim();
+        string r = currentRequest?.Trim();
+        bool correct = string.Equals(f, r, System.StringComparison.OrdinalIgnoreCase);
+        Debug.Log($"[CheckDrop] dropped='{f}' request='{r}' correct={correct}");
+
+        if (correct)
         {
+            bool added = uniqueCorrect.Add(r);  // use 'r' so set uses canonical trimmed name
+            Debug.Log($"[CheckDrop] uniqueCorrect.Add('{r}') -> {added}. Count={uniqueCorrect.Count}");
+
+            UpdateStarsHUD();                   // <-- update immediately
+
+            if (uniqueCorrect.Count >= starsToWin)
+            {
+                levelCleared = true;
+                ClearFruits();
+                if (levelCompletePanel != null) levelCompletePanel.SetActive(true);
+                Debug.Log("[CheckDrop] LEVEL COMPLETE!");
+                return;
+            }
+
             StartNewRound();
+
         }
         else
         {
             fruit.ResetToStart();
         }
+
+    }
+    private void UpdateStarsHUD()
+    {
+        if (starHUD != null) starHUD.SetStars(uniqueCorrect.Count, starsToWin);
     }
 
     private void ClearFruits()

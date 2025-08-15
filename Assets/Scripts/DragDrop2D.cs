@@ -15,6 +15,7 @@ public class DragDrop2D : MonoBehaviour
     void Awake()
     {
         collider2D = GetComponent<Collider2D>();
+        if (roundManager == null ) roundManager = FindObjectOfType<RoundManager>(true);
     }
 
 
