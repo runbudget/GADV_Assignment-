@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FoodItemClick : MonoBehaviour
+public class image : MonoBehaviour
 {
-    public string foodName;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,10 +14,5 @@ public class FoodItemClick : MonoBehaviour
     void Update()
     {
         
-    }
-
-    public void onClick()
-    {
-        Debug.Log("Clicked" +  foodName);
     }
 }

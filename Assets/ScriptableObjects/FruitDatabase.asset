@@ -21,10 +21,10 @@ MonoBehaviour:
   - fruitNameEnglish: Banana
     fruitNameKhmer: "\u1785\u17C1\u1780"
     sprite: {fileID: -5728686177044832811, guid: b1f24b3bc2e2f1d4b858657ad5c115a0, type: 3}
-    audioEnglish: {fileID: 8300000, guid: a2197716919c0e04eb10f9e11afde7ac, type: 3}
-    audioKhmer: {fileID: 8300000, guid: becc5fa72c759e84a9cb487b12c73375, type: 3}
+    audioEnglish: {fileID: 8300000, guid: 151dbd25355f71141aebda75cfa76e24, type: 3}
+    audioKhmer: {fileID: 8300000, guid: 5f0cb8ca03e163b4190dc20c9324c444, type: 3}
   - fruitNameEnglish: Cherries
-    fruitNameKhmer: Plceholer
+    fruitNameKhmer: "\u1785\u17C1\u179A\u17B8\u1794\u17CA\u17B8"
     sprite: {fileID: -4570538037665054336, guid: 3d6be91968cb95546ac95aeff5e52f84, type: 3}
-    audioEnglish: {fileID: 8300000, guid: a2197716919c0e04eb10f9e11afde7ac, type: 3}
-    audioKhmer: {fileID: 8300000, guid: becc5fa72c759e84a9cb487b12c73375, type: 3}
+    audioEnglish: {fileID: 8300000, guid: 61c03eef507892545a871dc7dec4a2e2, type: 3}
+    audioKhmer: {fileID: 8300000, guid: 8e212a011e0e9974a8d2c2d094bdf5c9, type: 3}
