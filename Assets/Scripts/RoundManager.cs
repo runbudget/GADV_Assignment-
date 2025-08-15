@@ -24,12 +24,17 @@ public class RoundManager : MonoBehaviour
     [SerializeField] private int starsToWin = 3;              // goal
     [SerializeField] private GameObject levelCompletePanel;   // inactive at start
 
+    [Header("Coins")]
+    [SerializeField] private CoinHUD coinHUD;
+    [SerializeField] private int coinsPerCorrect = 5;
+
 
 
     private readonly List<DraggableFruit> activeFruits = new List<DraggableFruit>();
     private readonly HashSet<string> uniqueCorrect = new HashSet<string>(); //track unique fruit names
     private string currentRequest;
     private bool levelCleared = false;
+    private int coins = 0;
 
     void Start()
     {
@@ -109,22 +114,27 @@ public class RoundManager : MonoBehaviour
         string f = fruitName?.Trim();
         string r = currentRequest?.Trim();
         bool correct = string.Equals(f, r, System.StringComparison.OrdinalIgnoreCase);
-        Debug.Log($"[CheckDrop] dropped='{f}' request='{r}' correct={correct}");
+        //Debug.Log($"[CheckDrop] dropped='{f}' request='{r}' correct={correct}");
 
         if (correct)
         {
-            bool added = uniqueCorrect.Add(r);  // use 'r' so set uses canonical trimmed name
-            Debug.Log($"[CheckDrop] uniqueCorrect.Add('{r}') -> {added}. Count={uniqueCorrect.Count}");
+            //coins added for every correct ans
+            coins += coinsPerCorrect;
+            UpdateCoinsHUD();
 
-            UpdateStarsHUD();                   // <-- update immediately
-
-            if (uniqueCorrect.Count >= starsToWin)
+            bool added = uniqueCorrect.Add(r);
+            if (added)
             {
-                levelCleared = true;
-                ClearFruits();
-                if (levelCompletePanel != null) levelCompletePanel.SetActive(true);
-                Debug.Log("[CheckDrop] LEVEL COMPLETE!");
-                return;
+                UpdateStarsHUD();
+
+                if (uniqueCorrect.Count >= starsToWin)
+                {
+                    levelCleared = true;
+                    ClearFruits();
+                    if (levelCompletePanel != null) levelCompletePanel.SetActive(true);
+                   // Debug.Log("[CheckDrop] LEVEL COMPLETE!");
+                    return;
+                }
             }
 
             StartNewRound();
@@ -139,6 +149,12 @@ public class RoundManager : MonoBehaviour
     private void UpdateStarsHUD()
     {
         if (starHUD != null) starHUD.SetStars(uniqueCorrect.Count, starsToWin);
+    }
+
+
+    private void UpdateCoinsHUD()
+    {
+        if (coinHUD != null) coinHUD.SetCoins(coins);
     }
 
     private void ClearFruits()

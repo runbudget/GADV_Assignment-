@@ -14,14 +14,22 @@ public class StarHUD : MonoBehaviour
     public void SetStars(int current, int goal)
     {
         if (counter != null) counter.text = $"{current} / {goal}";
-        if (starIcons == null) return;
 
+        if (starIcons == null || starIcons.Count == 0) return;
         for (int i = 0; i < starIcons.Count; i++)
         {
-            if (starIcons[i] == null) continue;
+            var img = starIcons[i];
+            if (img == null) continue;
+
             bool lit = i < current;
-            starIcons[i].sprite = lit ? starOn : starOff;
-            starIcons[i].color = Color.white; // make sure it's visible
+            var targetSprite = lit ? starOn : starOff;
+
+            img.overrideSprite = targetSprite; // more explicit than .sprite
+            img.SetAllDirty();                 // force refresh
+            img.color = Color.white;
+
+            // Debug to verify it’s being called
+            // Debug.Log($"[StarHUD] Star {i} -> {(lit?"ON":"OFF")} ({targetSprite?.name})", img);
         }
     }
 }
