@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-// picks the request, spawns fruits,
-// clears between rounds, and resets the pos of wrong selections
+// This script handles the game loop for each round:
+// 1) Picks a random fruit for the customer to request
+// 2) Spawns a mix of correct and wrong fruits on screen
+// 3) Checks if the player drops the correct fruit
+// 4) Updates score, stars, and coins
+// 5) Ends the level when all unique fruits have been guessed
 
 
 public class RoundManager : MonoBehaviour
@@ -15,17 +19,17 @@ public class RoundManager : MonoBehaviour
     [SerializeField] private CustomerRequestManager requestUI;  // assign in Inspector
 
     [Header("Spawning")]
-    [SerializeField] private DraggableFruit draggableFruitPrefab; // assign prefab (root has DraggableFruit)
+    [SerializeField] private DraggableFruit draggableFruitPrefab; // assign prefab 
     [SerializeField] private List<Transform> spawnPoints;         // assign in Inspector
     [SerializeField] private int fruitsPerRound = 3;
 
 
     [SerializeField] private ScoreManager score;   // << assign in Inspector
-[SerializeField] private StarHUD starHUD;
-[SerializeField] private StarHUD starHUDComplete;   // optional: for the complete panel
-[SerializeField] private CoinHUD coinHUD;
-[SerializeField] private CoinHUD coinHUDComplete;   // optional
-[SerializeField] private GameObject levelCompletePanel;
+    [SerializeField] private StarHUD starHUD;
+    [SerializeField] private StarHUD starHUDComplete;   // optional: for the complete panel
+    [SerializeField] private CoinHUD coinHUD;
+    [SerializeField] private CoinHUD coinHUDComplete;   // optional
+    [SerializeField] private GameObject levelCompletePanel;
 
 
     private readonly List<DraggableFruit> activeFruits = new List<DraggableFruit>();
@@ -36,10 +40,6 @@ public class RoundManager : MonoBehaviour
 
     void Start()
     {
-        if (!ValidateSetup()) return;
-
-
-        //check if auto-find not wired
 
         if (score == null)
         {
@@ -79,7 +79,6 @@ public class RoundManager : MonoBehaviour
     public void StartNewRound()
     {
         if (score.LevelCleared) return;
-        if (!ValidateSetup()) return;
 
         ClearFruits();
 
@@ -87,7 +86,7 @@ public class RoundManager : MonoBehaviour
         if (string.IsNullOrEmpty(currentRequest)) return; // nothing to request
 
         requestUI.SetRequest(currentRequest);
-        // 2) figure out how many fruits we can actually spawn
+        // 2) figure out how many fruits actually spawn
         int maxBySpawnPoints = (spawnPoints != null) ? spawnPoints.Count : 0;
         int totalUnique = Mathf.Max(1, database.All.Count); // unique fruit entries available
         int maxByUnique = Mathf.Min(totalUnique, fruitsPerRound);
@@ -99,21 +98,17 @@ public class RoundManager : MonoBehaviour
             return;
         }
 
-        // 3) build the names list: includes exactly one 'currentRequest' + (targetCount-1) distinct others
+        // 3) build the names list: 
         var names = BuildNamesSafe(targetCount, currentRequest);
 
-        // 4) spawn them (parent to spawn point to avoid offsets/overlaps)
+        // 4) spawn them 
         Shuffle(spawnPoints);
 
         for (int i = 0; i < targetCount; i++)
         {
             var nameToSpawn = names[i];
             var data = database.GetByEnglish(nameToSpawn);
-            if (data == null || data.sprite == null)
-            {
-                Debug.LogWarning($"[RoundManager] Missing data/sprite for '{nameToSpawn}'. Skipping.");
-                continue;
-            }
+            
 
             var fruit = Instantiate(draggableFruitPrefab, spawnPoints[i], false);
             fruit.transform.localPosition = Vector3.zero;
@@ -124,7 +119,7 @@ public class RoundManager : MonoBehaviour
             var drag = fruit.GetComponent<DragDrop2D>();
             if (drag != null) drag.SetRoundManager(this);
 
-            fruit.Init(data); // <-- now each fruit knows Eng/Khmer + audio
+            fruit.Init(data); // <-- now each fruit has Eng/Khmer + audio
             activeFruits.Add(fruit);
         }
     }
@@ -158,7 +153,7 @@ public class RoundManager : MonoBehaviour
         activeFruits.Clear();
     }
 
-    // Builds a list of 'count' English names that includes exactly one 'mustInclude' and the rest unique others.
+    // list of 'count' English names that includes exactly one 'mustInclude' and the rest unique others.
     private List<string> BuildNamesSafe(int count, string mustInclude)
     {
         // Gather all unique English names from the database
@@ -171,11 +166,11 @@ public class RoundManager : MonoBehaviour
                 pool.Add(n);
         }
 
-        // Ensure mustInclude exists in pool
+        // Ensure mustInclude exists 
         if (!pool.Contains(mustInclude))
             pool.Add(mustInclude);
 
-        // Pick (count-1) distinct others != mustInclude
+        // Pick distinct others != mustInclude
         var others = new List<string>(pool);
         others.RemoveAll(n => n == mustInclude);
 
@@ -186,13 +181,13 @@ public class RoundManager : MonoBehaviour
         for (int i = 0; i < count - 1 && i < others.Count; i++)
             result.Add(others[i]);
 
-        // If we still don't have enough (very small DB), fill with non-correct items
+        // If don't have enough, fill with non-correct items
         int guard = 100;
         while (result.Count < count && guard-- > 0)
         {
             if (others.Count == 0) break; // nothing else to add
             var candidate = others[UnityEngine.Random.Range(0, others.Count)];
-            // allow duplicates if necessary, but do not add multiple of mustInclude
+            // allow duplicates if necessary, but no multiple of mustInclude
             result.Add(candidate);
         }
 
@@ -211,33 +206,5 @@ public class RoundManager : MonoBehaviour
         }
     }
 
-    private bool ValidateSetup()
-    {
-        if (database == null)
-        {
-            Debug.LogError("[RoundManager] 'database' is not assigned.", this);
-            return false;
-        }
-        if (requestUI == null)
-        {
-            Debug.LogError("[RoundManager] 'requestUI' is not assigned.", this);
-            return false;
-        }
-        if (draggableFruitPrefab == null)
-        {
-            Debug.LogError("[RoundManager] 'draggableFruitPrefab' is not assigned.", this);
-            return false;
-        }
-        if (spawnPoints == null || spawnPoints.Count == 0)
-        {
-            Debug.LogError("[RoundManager] 'spawnPoints' is empty or not assigned.", this);
-            return false;
-        }
-        if (fruitsPerRound <= 0)
-        {
-            Debug.LogError("[RoundManager] 'fruitsPerRound' must be > 0.", this);
-            return false;
-        }
-        return true;
-    }
+    
 }

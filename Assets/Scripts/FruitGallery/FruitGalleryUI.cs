@@ -39,7 +39,7 @@ public class FruitGalleryPanel : MonoBehaviour
         foreach (var fd in database.All)
         {
             if (fd == null) continue;
-            var card = Instantiate(itemPrefab, content);   // <- instantiate prefab under Content
+            var card = Instantiate(itemPrefab, content);   // instantiate prefab under Content
             card.SetData(fd);
         }
     }

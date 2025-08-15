@@ -8,7 +8,7 @@ public class StarHUD : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TMP_Text counter;
     [SerializeField] private List<Image> starIcons;   // 3 Image refs in order (left->right)
-    [SerializeField] private Sprite starOn;           // filled / glowing star sprite
+    [SerializeField] private Sprite starOn;           //  star sprite
     [SerializeField] private Sprite starOff;          // empty star sprite
 
     public void SetStars(int current, int goal)
@@ -28,8 +28,7 @@ public class StarHUD : MonoBehaviour
             img.SetAllDirty();                 // force refresh
             img.color = Color.white;
 
-            // Debug to verify it’s being called
-            // Debug.Log($"[StarHUD] Star {i} -> {(lit?"ON":"OFF")} ({targetSprite?.name})", img);
+            
         }
     }
 }

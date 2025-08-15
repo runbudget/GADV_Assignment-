@@ -14,7 +14,7 @@ public class DraggableFruit : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public string fruitName;                 // used by RoundManager for correctness
     public FruitData Data { get; private set; }
 
-    // Use TMP_Text so it works with BOTH TextMeshProUGUI (UI) and TextMeshPro (3D)
+    
     [SerializeField] private TMP_Text label;
 
     private SpriteRenderer sr;
@@ -29,10 +29,10 @@ public class DraggableFruit : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         sr = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
 
-        // Only bind to a TMP that is a CHILD of THIS prefab instance
+        
         if (label == null || !label.transform.IsChildOf(transform))
         {
-            // Try UGUI first, then 3D, then base
+           
             label = GetComponentInChildren<TextMeshProUGUI>(true);
             if (label == null) label = GetComponentInChildren<TextMeshPro>(true);
             if (label == null) label = GetComponentInChildren<TMP_Text>(true);
@@ -48,7 +48,7 @@ public class DraggableFruit : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     void Start()
     {
         startPos = transform.position;
-        RefreshLabel(); // safe even if label is null (guarded)
+        RefreshLabel(); // safe even if label is null 
     }
 
     public void Init(FruitData data)
@@ -73,14 +73,14 @@ public class DraggableFruit : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void RefreshLabel()
     {
-        if (label == null) return; // <— prevent NREs
+        if (label == null) return; 
         if (currentMode == Lang.English)
             label.text = (Data != null) ? Data.fruitNameEnglish : fruitName;
         else
             label.text = (Data != null) ? Data.fruitNameKhmer : "(—)";
     }
 
-    // === hover / click ===
+    //hover / click 
     public void OnPointerEnter(PointerEventData _)
     {
         if (label == null) return;
