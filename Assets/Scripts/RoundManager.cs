@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -19,51 +20,73 @@ public class RoundManager : MonoBehaviour
     [SerializeField] private int fruitsPerRound = 3;
 
 
-    [Header("Scoring / Win")]
-    [SerializeField] private StarHUD starHUD;                 // assign in Inspector
-    [SerializeField] private int starsToWin = 3;              // goal
-    [SerializeField] private GameObject levelCompletePanel;   // inactive at start
-
-    [Header("Coins")]
-    [SerializeField] private CoinHUD coinHUD;
-    [SerializeField] private int coinsPerCorrect = 5;
-
+    [SerializeField] private ScoreManager score;   // << assign in Inspector
+[SerializeField] private StarHUD starHUD;
+[SerializeField] private StarHUD starHUDComplete;   // optional: for the complete panel
+[SerializeField] private CoinHUD coinHUD;
+[SerializeField] private CoinHUD coinHUDComplete;   // optional
+[SerializeField] private GameObject levelCompletePanel;
 
 
     private readonly List<DraggableFruit> activeFruits = new List<DraggableFruit>();
     private readonly HashSet<string> uniqueCorrect = new HashSet<string>(); //track unique fruit names
     private string currentRequest;
-    private bool levelCleared = false;
-    private int coins = 0;
+    
+    
 
     void Start()
     {
         if (!ValidateSetup()) return;
 
+
+        //check if auto-find not wired
+
+        if (score == null)
+        {
+            score = FindObjectOfType<ScoreManager>();
+            if (score == null)
+            {
+                Debug.LogError("[RoundManger] scoremanager not found", this);
+                return;
+            }
+        }
+
         database.Initialize();
-        UpdateStarsHUD(); // 0/3 at the beginning of the lvl
-        if (levelCompletePanel != null ) levelCompletePanel.SetActive(false);
-       
+        score.ResetAll();
+
+        // Hook HUD updates
+        score.OnScoreChanged += () =>
+        {
+            starHUD?.SetStars(score.UniqueStars, score.StarsToWin);
+            starHUDComplete?.SetStars(score.UniqueStars, score.StarsToWin);
+            coinHUD?.SetCoins(score.Coins);
+            coinHUDComplete?.SetCoins(score.Coins);
+        };
+        score.OnLevelCleared += () =>
+        {
+            ClearFruits();
+            if (levelCompletePanel != null) levelCompletePanel.SetActive(true);
+        };
+
+        // Prime HUD
+        starHUD?.SetStars(score.UniqueStars, score.StarsToWin);
+        coinHUD?.SetCoins(score.Coins);
+        if (levelCompletePanel != null) levelCompletePanel.SetActive(false);
+
         StartNewRound();
     }
 
     public void StartNewRound()
     {
-        if (levelCleared) return;
+        if (score.LevelCleared) return;
         if (!ValidateSetup()) return;
 
         ClearFruits();
 
-        // 1) pick the requested fruit (must exist)
-        currentRequest = database.GetRandomName(); // returns fruitNameEnglish
-        if (string.IsNullOrEmpty(currentRequest))
-        {
-            Debug.LogError("[RoundManager] Database has no fruits. Cannot start round.", this);
-            return;
-        }
+        currentRequest = score.PickRequestedFruit(database);
+        if (string.IsNullOrEmpty(currentRequest)) return; // nothing to request
 
         requestUI.SetRequest(currentRequest);
-
         // 2) figure out how many fruits we can actually spawn
         int maxBySpawnPoints = (spawnPoints != null) ? spawnPoints.Count : 0;
         int totalUnique = Mathf.Max(1, database.All.Count); // unique fruit entries available
@@ -110,52 +133,21 @@ public class RoundManager : MonoBehaviour
     {
         if (fruit == null) return;
 
-        // Robust compare + trace
         string f = fruitName?.Trim();
         string r = currentRequest?.Trim();
-        bool correct = string.Equals(f, r, System.StringComparison.OrdinalIgnoreCase);
-        //Debug.Log($"[CheckDrop] dropped='{f}' request='{r}' correct={correct}");
+        bool correct = string.Equals(f, r, StringComparison.OrdinalIgnoreCase);
 
         if (correct)
         {
-            //coins added for every correct ans
-            coins += coinsPerCorrect;
-            UpdateCoinsHUD();
-
-            bool added = uniqueCorrect.Add(r);
-            if (added)
-            {
-                UpdateStarsHUD();
-
-                if (uniqueCorrect.Count >= starsToWin)
-                {
-                    levelCleared = true;
-                    ClearFruits();
-                    if (levelCompletePanel != null) levelCompletePanel.SetActive(true);
-                   // Debug.Log("[CheckDrop] LEVEL COMPLETE!");
-                    return;
-                }
-            }
-
-            StartNewRound();
-
+            score.RegisterCorrect(r);
+            if (!score.LevelCleared) StartNewRound();
         }
         else
         {
             fruit.ResetToStart();
         }
-
     }
-    private void UpdateStarsHUD()
-    {
-        if (starHUD != null) starHUD.SetStars(uniqueCorrect.Count, starsToWin);
-    }
-
-
-    private void UpdateCoinsHUD()
-    {
-        if (coinHUD != null) coinHUD.SetCoins(coins);
-    }
+    
 
     private void ClearFruits()
     {
@@ -199,7 +191,7 @@ public class RoundManager : MonoBehaviour
         while (result.Count < count && guard-- > 0)
         {
             if (others.Count == 0) break; // nothing else to add
-            var candidate = others[Random.Range(0, others.Count)];
+            var candidate = others[UnityEngine.Random.Range(0, others.Count)];
             // allow duplicates if necessary, but do not add multiple of mustInclude
             result.Add(candidate);
         }
@@ -214,7 +206,7 @@ public class RoundManager : MonoBehaviour
         if (list == null) return;
         for (int i = 0; i < list.Count; i++)
         {
-            int j = Random.Range(i, list.Count);
+            int j = UnityEngine.Random.Range(i, list.Count);
             (list[i], list[j]) = (list[j], list[i]);
         }
     }
