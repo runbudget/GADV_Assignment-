@@ -112,7 +112,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7456358835685458122}
   - component: {fileID: 9210280405263129966}
-  - component: {fileID: 5245172448628746126}
   - component: {fileID: 4531249445087467907}
   - component: {fileID: 5119815000560558373}
   - component: {fileID: 6320553202756420882}
@@ -196,19 +195,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5245172448628746126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6531483457692846049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5aef9431a0dc3cb4ca268e1416cddf6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  foodName: Banana
 --- !u!58 &4531249445087467907
 CircleCollider2D:
   m_ObjectHideFlags: 0
